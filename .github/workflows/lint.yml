@@ -1,0 +1,40 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Check formatting with black
+      run: |
+        black --check bruno_llm tests
+
+    - name: Lint with ruff
+      run: |
+        ruff check bruno_llm tests
+
+    - name: Type check with mypy
+      run: |
+        mypy bruno_llm
+
+    - name: Security check with bandit
+      run: |
+        pip install bandit
+        bandit -r bruno_llm -ll
