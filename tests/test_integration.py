@@ -349,5 +349,3 @@ async def test_timeout_integration():
         assert "timeout" in str(e).lower() or "timed out" in str(e).lower()
 
     await provider.close()
-
-

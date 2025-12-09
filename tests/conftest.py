@@ -1,6 +1,5 @@
 """Test configuration and fixtures for bruno-llm tests."""
 
-
 import pytest
 
 from bruno_core.models import Message, MessageRole
