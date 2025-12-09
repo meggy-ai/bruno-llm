@@ -261,6 +261,151 @@ class CostTracker:
             }
             for record in self.usage_history
         ]
+    
+    def export_to_csv(self, filepath: str) -> None:
+        """
+        Export usage history to CSV file.
+        
+        Args:
+            filepath: Path to output CSV file
+        """
+        import csv
+        
+        if not self.usage_history:
+            return
+        
+        with open(filepath, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "Timestamp", "Model", "Input Tokens", "Output Tokens",
+                "Total Tokens", "Input Cost", "Output Cost", "Total Cost"
+            ])
+            
+            for record in self.usage_history:
+                writer.writerow([
+                    record.datetime.isoformat(),
+                    record.model,
+                    record.input_tokens,
+                    record.output_tokens,
+                    record.total_tokens,
+                    f"{record.input_cost:.6f}",
+                    f"{record.output_cost:.6f}",
+                    f"{record.total_cost:.6f}",
+                ])
+    
+    def export_to_json(self, filepath: str) -> None:
+        """
+        Export usage history to JSON file.
+        
+        Args:
+            filepath: Path to output JSON file
+        """
+        import json
+        
+        data = {
+            "provider": self.provider_name,
+            "currency": self.currency,
+            "export_date": datetime.now().isoformat(),
+            "summary": self.get_usage_report(),
+            "history": self.export_history(),
+        }
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+    
+    def get_time_range_report(
+        self,
+        start_time: Optional[float] = None,
+        end_time: Optional[float] = None,
+    ) -> Dict:
+        """
+        Get usage report for a specific time range.
+        
+        Args:
+            start_time: Start timestamp (inclusive)
+            end_time: End timestamp (inclusive)
+            
+        Returns:
+            Usage report for the time range
+        """
+        filtered_records = self.usage_history
+        
+        if start_time:
+            filtered_records = [
+                r for r in filtered_records if r.timestamp >= start_time
+            ]
+        
+        if end_time:
+            filtered_records = [
+                r for r in filtered_records if r.timestamp <= end_time
+            ]
+        
+        if not filtered_records:
+            return {
+                "total_cost": 0.0,
+                "total_tokens": 0,
+                "total_requests": 0,
+                "model_breakdown": {},
+            }
+        
+        total_cost = sum(r.total_cost for r in filtered_records)
+        total_tokens = sum(r.total_tokens for r in filtered_records)
+        
+        # Model breakdown
+        breakdown = {}
+        for record in filtered_records:
+            if record.model not in breakdown:
+                breakdown[record.model] = {
+                    "cost": 0.0,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "requests": 0,
+                }
+            
+            breakdown[record.model]["cost"] += record.total_cost
+            breakdown[record.model]["input_tokens"] += record.input_tokens
+            breakdown[record.model]["output_tokens"] += record.output_tokens
+            breakdown[record.model]["requests"] += 1
+        
+        return {
+            "total_cost": total_cost,
+            "total_tokens": total_tokens,
+            "total_requests": len(filtered_records),
+            "model_breakdown": breakdown,
+            "start_time": (
+                filtered_records[0].datetime.isoformat()
+                if filtered_records
+                else None
+            ),
+            "end_time": (
+                filtered_records[-1].datetime.isoformat()
+                if filtered_records
+                else None
+            ),
+        }
+    
+    def check_budget(self, budget_limit: float) -> Dict:
+        """
+        Check if spending is within budget.
+        
+        Args:
+            budget_limit: Budget limit in currency units
+            
+        Returns:
+            Budget status information
+        """
+        total_cost = self.get_total_cost()
+        remaining = budget_limit - total_cost
+        percent_used = (total_cost / budget_limit * 100) if budget_limit > 0 else 0
+        
+        return {
+            "budget_limit": budget_limit,
+            "total_spent": total_cost,
+            "remaining": remaining,
+            "percent_used": percent_used,
+            "within_budget": total_cost <= budget_limit,
+            "near_limit": percent_used >= 90,  # Warning at 90%
+        }
 
 
 # Common pricing configurations (prices in USD per 1K tokens)
