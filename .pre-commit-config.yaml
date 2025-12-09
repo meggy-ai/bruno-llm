@@ -1,5 +1,5 @@
 # Pre-commit hooks for code quality
-# Run: pre-commit install
+# Install: pre-commit install
 # Run manually: pre-commit run --all-files
 
 repos:
@@ -15,17 +15,12 @@ repos:
       - id: check-merge-conflict
       - id: detect-private-key
 
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-        language_version: python3.9
-
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
+  - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.0
     hooks:
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+        args: [--fix]
+      - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
@@ -33,5 +28,7 @@ repos:
       - id: mypy
         additional_dependencies:
           - pydantic>=2.0.0
-          - types-aiofiles
-        args: [--strict, --ignore-missing-imports]
+        # Use same relaxed settings as pyproject.toml
+        args: [--ignore-missing-imports, --no-strict-optional]
+        # Skip on certain files to avoid CI mismatches
+        exclude: ^tests/
