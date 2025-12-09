@@ -28,10 +28,13 @@ from bruno_llm.__version__ import (
 )
 
 # Public API will be populated as providers are implemented
+from bruno_llm.factory import LLMFactory
+
 __all__ = [
     "__version__",
     "__author__",
     "__email__",
     "__license__",
     "__description__",
+    "LLMFactory",
 ]
