@@ -102,10 +102,12 @@ addopts = [
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",
+    "-m", "not wip",
 ]
 markers = [
     "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "wip: marks tests as work-in-progress (deselect with '-m \"not wip\"')",
 ]
 
 [tool.coverage.run]
