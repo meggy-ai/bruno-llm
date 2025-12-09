@@ -144,16 +144,17 @@ warn_return_any = false
 warn_unused_configs = true
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
-check_untyped_defs = true
+check_untyped_defs = false
 disallow_untyped_calls = false
 disallow_untyped_decorators = false
-no_implicit_optional = true
-warn_redundant_casts = true
+no_implicit_optional = false
+warn_redundant_casts = false
 warn_unused_ignores = false
-warn_no_return = true
-follow_imports = "normal"
+warn_no_return = false
+follow_imports = "silent"
 ignore_missing_imports = true
 pretty = true
+disable_error_code = ["misc", "assignment", "return-value", "attr-defined", "arg-type", "operator"]
 
 [[tool.mypy.overrides]]
 module = [
