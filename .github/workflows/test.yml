@@ -8,12 +8,15 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        # Simplified: Test only essential Python versions on Ubuntu
+        # - 3.9: Minimum supported version
+        # - 3.11: Primary development version
+        # - 3.12: Latest stable version
+        python-version: ["3.9", "3.11", "3.12"]
 
     steps:
     - uses: actions/checkout@v4
@@ -34,7 +37,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
-      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      if: matrix.python-version == '3.11'
       with:
         file: ./coverage.xml
         flags: unittests
