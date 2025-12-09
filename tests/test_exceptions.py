@@ -1,16 +1,15 @@
 """Tests for bruno-llm exception hierarchy."""
 
-import pytest
 from bruno_llm.exceptions import (
-    LLMError,
     AuthenticationError,
-    RateLimitError,
-    ModelNotFoundError,
-    ContextLengthExceededError,
-    StreamError,
     ConfigurationError,
-    TimeoutError,
+    ContextLengthExceededError,
     InvalidResponseError,
+    LLMError,
+    ModelNotFoundError,
+    RateLimitError,
+    StreamError,
+    TimeoutError,
 )
 
 
@@ -107,7 +106,7 @@ def test_exception_inheritance():
         TimeoutError("test"),
         InvalidResponseError("test"),
     ]
-    
+
     for exc in exceptions:
         assert isinstance(exc, LLMError)
         assert isinstance(exc, Exception)

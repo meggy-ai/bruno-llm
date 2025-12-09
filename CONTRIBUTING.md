@@ -1,52 +1,104 @@
 # Contributing to bruno-llm
 
-Thank you for your interest in contributing to bruno-llm! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to bruno-llm! This document provides comprehensive guidelines and instructions for contributing.
 
-## Code of Conduct
+## 🤝 Code of Conduct
 
-This project follows the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+This project follows the [Contributor Covenant Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/). Please be respectful and constructive in all interactions.
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 - Python 3.9 or higher
 - Git
-- bruno-core installed (`pip install bruno-core`)
+- bruno-core installed (automatically installed with bruno-llm)
 
 ### Development Setup
 
-1. Fork and clone the repository:
+1. **Fork and Clone**
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/bruno-llm.git
+   cd bruno-llm
+   ```
+
+2. **Create Virtual Environment**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -e ".[dev]"
+   ```
+
+4. **Verify Setup**
+   ```bash
+   pytest tests/
+   ```
+
+## 🔄 Development Workflow
+
+### 1. Create a Branch
+
 ```bash
-git clone https://github.com/YOUR-USERNAME/bruno-llm.git
-cd bruno-llm
+git checkout -b feature/your-feature-name
+# or
+git checkout -b fix/issue-description
 ```
 
-2. Create a virtual environment:
+### 2. Make Changes
+
+- Write code following our style guidelines (see below)
+- Add tests for new functionality
+- Update documentation as needed
+- Run tests frequently: `pytest tests/`
+
+### 3. Run Quality Checks
+
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Format code
+ruff format .
+
+# Lint code
+ruff check .
+
+# Fix auto-fixable issues
+ruff check --fix .
+
+# Run tests with coverage
+pytest tests/ --cov=bruno_llm --cov-report=html
 ```
 
-3. Install development dependencies:
+### 4. Commit Changes
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```bash
-pip install -e ".[dev]"
+git commit -m "feat: add new feature"
+git commit -m "fix: resolve issue #123"
+git commit -m "docs: update API reference"
 ```
 
-4. Install pre-commit hooks:
+**Commit types:**
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation changes
+- `test:` Adding or updating tests
+- `refactor:` Code refactoring
+- `perf:` Performance improvements
+- `chore:` Maintenance tasks
+
+### 5. Push and Create PR
+
 ```bash
-pre-commit install
+git push origin feature/your-feature-name
 ```
 
-## Development Workflow
-
-### Running Tests
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=bruno_llm --cov-report=html
+Then create a Pull Request on GitHub with:
+- Clear description of changes
+- Reference to related issues (`Fixes #123`)
+- Screenshots/examples if relevant
 
 # Run specific test file
 pytest tests/test_exceptions.py

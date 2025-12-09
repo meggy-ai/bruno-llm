@@ -6,7 +6,8 @@ integrate seamlessly with the bruno-core framework.
 """
 
 from pathlib import Path
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 # Read the contents of README file
 this_directory = Path(__file__).parent

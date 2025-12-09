@@ -1,8 +1,7 @@
 """Test configuration and fixtures for bruno-llm tests."""
 
+
 import pytest
-from typing import AsyncIterator
-from unittest.mock import AsyncMock
 
 from bruno_core.models import Message, MessageRole
 
@@ -25,7 +24,9 @@ def mock_response():
 @pytest.fixture
 async def mock_stream_response():
     """Mock streaming response."""
+
     async def _stream():
         for chunk in ["Hello", "! ", "How ", "can ", "I ", "help?"]:
             yield chunk
+
     return _stream

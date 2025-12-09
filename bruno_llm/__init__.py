@@ -13,18 +13,18 @@ Example:
     >>> from bruno_llm.providers.ollama import OllamaProvider
     >>> llm = OllamaProvider(model="llama2")
     >>> response = await llm.generate([Message(role="user", content="Hello")])
-    
+
     >>> from bruno_llm.providers.openai import OpenAIProvider
     >>> llm = OpenAIProvider(api_key="sk-...", model="gpt-4")
     >>> response = await llm.generate([Message(role="user", content="Hello")])
 """
 
 from bruno_llm.__version__ import (
-    __version__,
     __author__,
+    __description__,
     __email__,
     __license__,
-    __description__,
+    __version__,
 )
 
 # Public API will be populated as providers are implemented
