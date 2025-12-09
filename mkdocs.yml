@@ -1,0 +1,100 @@
+site_name: bruno-llm
+site_description: LLM provider implementations for bruno-core framework
+site_author: Meggy AI
+site_url: https://meggy-ai.github.io/bruno-llm/
+
+repo_name: meggy-ai/bruno-llm
+repo_url: https://github.com/meggy-ai/bruno-llm
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_root_heading: true
+            show_source: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+  - User Guide:
+    - Overview: user-guide/overview.md
+    - Providers:
+      - Ollama: user-guide/providers/ollama.md
+      - OpenAI: user-guide/providers/openai.md
+    - Advanced Features:
+      - Caching: user-guide/advanced/caching.md
+      - Context Management: user-guide/advanced/context.md
+      - Streaming: user-guide/advanced/streaming.md
+      - Cost Tracking: user-guide/advanced/cost-tracking.md
+      - Middleware: user-guide/advanced/middleware.md
+  - API Reference:
+    - Factory: api/factory.md
+    - Providers: api/providers.md
+    - Base Utilities: api/base.md
+    - Exceptions: api/exceptions.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Pre-commit Hooks: development/pre-commit.md
+    - Testing: development/testing.md
+  - About:
+    - Changelog: about/changelog.md
+    - License: about/license.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/meggy-ai/bruno-llm
+  version:
+    provider: mike
