@@ -29,10 +29,23 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 
 3. **Install Dependencies**
    ```bash
-   pip install -e ".[dev]"
+   # Install bruno-core from GitHub (not on PyPI yet)
+   pip install git+https://github.com/meggy-ai/bruno-core.git@main
+
+   # Install bruno-llm with all dependencies
+   pip install -e ".[all]"
    ```
 
-4. **Verify Setup**
+4. **Install Pre-commit Hooks** ⚠️ **IMPORTANT**
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
+   This ensures code quality checks run automatically before each commit.
+   See [docs/PRE_COMMIT_SETUP.md](docs/PRE_COMMIT_SETUP.md) for details.
+
+5. **Verify Setup**
    ```bash
    pytest tests/
    ```
@@ -56,21 +69,39 @@ git checkout -b fix/issue-description
 
 ### 3. Run Quality Checks
 
+**Pre-commit hooks will run automatically on commit**, but you can also run manually:
+
 ```bash
+# Run all pre-commit hooks
+pre-commit run --all-files
+
 # Format code
 ruff format .
 
-# Lint code
-ruff check .
-
-# Fix auto-fixable issues
+# Lint code (with auto-fix)
 ruff check --fix .
+
+# Type check
+mypy bruno_llm
 
 # Run tests with coverage
 pytest tests/ --cov=bruno_llm --cov-report=html
 ```
 
+**Note:** Pre-commit hooks catch most issues automatically. If a commit is rejected:
+1. Review the errors shown
+2. Stage any auto-fixes: `git add -u`
+3. Commit again
+
 ### 4. Commit Changes
+
+**Pre-commit hooks run automatically** and will:
+- ✅ Format code with ruff
+- ✅ Fix linting issues automatically
+- ✅ Run type checks
+- ✅ Validate YAML/JSON/TOML files
+- ✅ Remove trailing whitespace
+- ✅ Check for large files and private keys
 
 Use [Conventional Commits](https://www.conventionalcommits.org/):
 
@@ -78,6 +109,15 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 git commit -m "feat: add new feature"
 git commit -m "fix: resolve issue #123"
 git commit -m "docs: update API reference"
+```
+
+**If pre-commit hooks fail:**
+```bash
+# Review errors, stage auto-fixes
+git add -u
+
+# Commit again
+git commit -m "feat: add new feature"
 ```
 
 **Commit types:**
@@ -109,19 +149,28 @@ pytest -m integration
 
 ### Code Quality
 
+**Pre-commit hooks handle most of this automatically!** But you can run manually:
+
 ```bash
-# Format code with black
-black bruno_llm tests
-
-# Lint with ruff
-ruff check bruno_llm tests
-
-# Type check with mypy
-mypy bruno_llm
-
-# Run all checks
+# Run all quality checks at once
 pre-commit run --all-files
+
+# Individual checks
+ruff format bruno_llm tests        # Format code
+ruff check bruno_llm tests         # Lint
+mypy bruno_llm                     # Type check
+
+# Run specific pre-commit hook
+pre-commit run ruff --all-files
+pre-commit run mypy --all-files
 ```
+
+**Important:** Always have pre-commit hooks installed:
+```bash
+pre-commit install  # Run once per clone
+```
+
+See [docs/PRE_COMMIT_SETUP.md](docs/PRE_COMMIT_SETUP.md) for complete guide.
 
 ### Adding a New Provider
 
@@ -196,19 +245,19 @@ Brief description of changes
 def example_function(param1: str, param2: int) -> str:
     """
     Brief description of function.
-    
+
     More detailed description if needed.
-    
+
     Args:
         param1: Description of param1
         param2: Description of param2
-    
+
     Returns:
         Description of return value
-    
+
     Raises:
         ValueError: When param1 is empty
-    
+
     Example:
         >>> result = example_function("test", 42)
         >>> print(result)
@@ -235,12 +284,12 @@ from bruno_llm.providers.ollama import OllamaProvider
 async def test_generate():
     """Test basic generation."""
     provider = OllamaProvider()
-    
+
     with patch.object(provider, '_make_request', new_callable=AsyncMock) as mock:
         mock.return_value = {"message": {"content": "response"}}
-        
+
         result = await provider.generate([Message(role="user", content="hi")])
-        
+
         assert result == "response"
         mock.assert_called_once()
 ```
