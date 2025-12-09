@@ -8,7 +8,7 @@ and cost tracking.
 
 import asyncio
 from abc import ABC
-from typing import Any, Callable, Dict, List, Optional, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 
 from bruno_core.interfaces import LLMInterface
 from bruno_core.models import Message
@@ -136,7 +136,7 @@ class BaseProvider(LLMInterface, ABC):
         """
         return self._system_prompt
 
-    def _add_system_prompt(self, messages: List[Message]) -> List[Message]:
+    def _add_system_prompt(self, messages: list[Message]) -> list[Message]:
         """
         Add system prompt to messages if set.
 
@@ -162,7 +162,7 @@ class BaseProvider(LLMInterface, ABC):
         )
         return [system_message] + messages
 
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict[str, Any]:
         """
         Get provider and configuration information.
 

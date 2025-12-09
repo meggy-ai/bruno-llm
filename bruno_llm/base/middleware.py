@@ -5,7 +5,7 @@ Provides hooks for pre/post-processing of requests and responses.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from bruno_core.models import Message
 
@@ -33,8 +33,8 @@ class Middleware(ABC):
 
     @abstractmethod
     async def before_request(
-        self, messages: List[Message], **kwargs: Any
-    ) -> tuple[List[Message], Dict[str, Any]]:
+        self, messages: list[Message], **kwargs: Any
+    ) -> tuple[list[Message], dict[str, Any]]:
         """
         Process messages and parameters before request.
 
@@ -48,7 +48,7 @@ class Middleware(ABC):
         pass
 
     @abstractmethod
-    async def after_response(self, messages: List[Message], response: str, **kwargs: Any) -> str:
+    async def after_response(self, messages: list[Message], response: str, **kwargs: Any) -> str:
         """
         Process response after receiving.
 
@@ -75,7 +75,7 @@ class Middleware(ABC):
         """
         return chunk
 
-    async def on_error(self, error: Exception, messages: List[Message], **kwargs: Any) -> None:
+    async def on_error(self, error: Exception, messages: list[Message], **kwargs: Any) -> None:  # noqa: B027
         """
         Handle errors during request.
 
@@ -118,8 +118,8 @@ class LoggingMiddleware(Middleware):
             self.logger = logger
 
     async def before_request(
-        self, messages: List[Message], **kwargs: Any
-    ) -> tuple[List[Message], Dict[str, Any]]:
+        self, messages: list[Message], **kwargs: Any
+    ) -> tuple[list[Message], dict[str, Any]]:
         """Log before request."""
         log_data = {
             "event": "llm_request",
@@ -133,7 +133,7 @@ class LoggingMiddleware(Middleware):
         self.logger.info("LLM request", **log_data)
         return messages, kwargs
 
-    async def after_response(self, messages: List[Message], response: str, **kwargs: Any) -> str:
+    async def after_response(self, messages: list[Message], response: str, **kwargs: Any) -> str:
         """Log after response."""
         log_data = {
             "event": "llm_response",
@@ -146,7 +146,7 @@ class LoggingMiddleware(Middleware):
         self.logger.info("LLM response", **log_data)
         return response
 
-    async def on_error(self, error: Exception, messages: List[Message], **kwargs: Any) -> None:
+    async def on_error(self, error: Exception, messages: list[Message], **kwargs: Any) -> None:
         """Log errors."""
         self.logger.error(
             "LLM error",
@@ -181,16 +181,16 @@ class CachingMiddleware(Middleware):
         """
         self.cache = cache
         self.cache_streaming = cache_streaming
-        self._current_stream_chunks: Optional[List[str]] = None
+        self._current_stream_chunks: Optional[list[str]] = None
 
     async def before_request(
-        self, messages: List[Message], **kwargs: Any
-    ) -> tuple[List[Message], Dict[str, Any]]:
+        self, messages: list[Message], **kwargs: Any
+    ) -> tuple[list[Message], dict[str, Any]]:
         """Check cache before request."""
         # Cache lookup is handled externally
         return messages, kwargs
 
-    async def after_response(self, messages: List[Message], response: str, **kwargs: Any) -> str:
+    async def after_response(self, messages: list[Message], response: str, **kwargs: Any) -> str:
         """Cache response after receiving."""
         self.cache.set(messages, response, **kwargs)
         return response
@@ -224,8 +224,8 @@ class ValidationMiddleware(Middleware):
     def __init__(
         self,
         max_message_length: Optional[int] = None,
-        allowed_roles: Optional[List[str]] = None,
-        required_params: Optional[List[str]] = None,
+        allowed_roles: Optional[list[str]] = None,
+        required_params: Optional[list[str]] = None,
     ):
         """
         Initialize validation middleware.
@@ -240,8 +240,8 @@ class ValidationMiddleware(Middleware):
         self.required_params = required_params or []
 
     async def before_request(
-        self, messages: List[Message], **kwargs: Any
-    ) -> tuple[List[Message], Dict[str, Any]]:
+        self, messages: list[Message], **kwargs: Any
+    ) -> tuple[list[Message], dict[str, Any]]:
         """Validate before request."""
         # Validate message lengths
         if self.max_message_length:
@@ -267,7 +267,7 @@ class ValidationMiddleware(Middleware):
 
         return messages, kwargs
 
-    async def after_response(self, messages: List[Message], response: str, **kwargs: Any) -> str:
+    async def after_response(self, messages: list[Message], response: str, **kwargs: Any) -> str:
         """No validation after response."""
         return response
 
@@ -300,17 +300,17 @@ class RetryMiddleware(Middleware):
         self.retry_count = 0
 
     async def before_request(
-        self, messages: List[Message], **kwargs: Any
-    ) -> tuple[List[Message], Dict[str, Any]]:
+        self, messages: list[Message], **kwargs: Any
+    ) -> tuple[list[Message], dict[str, Any]]:
         """Reset retry count before request."""
         self.retry_count = 0
         return messages, kwargs
 
-    async def after_response(self, messages: List[Message], response: str, **kwargs: Any) -> str:
+    async def after_response(self, messages: list[Message], response: str, **kwargs: Any) -> str:
         """No processing after successful response."""
         return response
 
-    async def on_error(self, error: Exception, messages: List[Message], **kwargs: Any) -> None:
+    async def on_error(self, error: Exception, messages: list[Message], **kwargs: Any) -> None:
         """Handle retry logic on error."""
         import asyncio
 
@@ -340,7 +340,7 @@ class MiddlewareChain:
         >>> messages, kwargs = await chain.before_request(messages, **kwargs)
     """
 
-    def __init__(self, middlewares: List[Middleware]):
+    def __init__(self, middlewares: list[Middleware]):
         """
         Initialize middleware chain.
 
@@ -350,14 +350,14 @@ class MiddlewareChain:
         self.middlewares = middlewares
 
     async def before_request(
-        self, messages: List[Message], **kwargs: Any
-    ) -> tuple[List[Message], Dict[str, Any]]:
+        self, messages: list[Message], **kwargs: Any
+    ) -> tuple[list[Message], dict[str, Any]]:
         """Execute all middleware before_request in order."""
         for middleware in self.middlewares:
             messages, kwargs = await middleware.before_request(messages, **kwargs)
         return messages, kwargs
 
-    async def after_response(self, messages: List[Message], response: str, **kwargs: Any) -> str:
+    async def after_response(self, messages: list[Message], response: str, **kwargs: Any) -> str:
         """Execute all middleware after_response in reverse order."""
         for middleware in reversed(self.middlewares):
             response = await middleware.after_response(messages, response, **kwargs)
@@ -369,7 +369,7 @@ class MiddlewareChain:
             chunk = await middleware.on_stream_chunk(chunk, **kwargs)
         return chunk
 
-    async def on_error(self, error: Exception, messages: List[Message], **kwargs: Any) -> None:
+    async def on_error(self, error: Exception, messages: list[Message], **kwargs: Any) -> None:
         """Execute all middleware on_error."""
         for middleware in self.middlewares:
             await middleware.on_error(error, messages, **kwargs)

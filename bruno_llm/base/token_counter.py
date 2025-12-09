@@ -7,7 +7,7 @@ with provider-specific tokenizers (e.g., tiktoken for OpenAI).
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Optional
 
 from bruno_core.models import Message
 
@@ -45,7 +45,7 @@ class TokenCounter(ABC):
         """
         return self.count_tokens(message.content)
 
-    def count_messages_tokens(self, messages: List[Message]) -> int:
+    def count_messages_tokens(self, messages: list[Message]) -> int:
         """
         Count tokens in multiple messages.
 

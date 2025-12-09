@@ -6,7 +6,7 @@ Manages token limits, message truncation, and context overflow handling.
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, List, Optional
+from typing import Callable, Optional
 
 from bruno_core.models import Message, MessageRole
 from bruno_llm.base.token_counter import TokenCounter, create_token_counter
@@ -141,7 +141,7 @@ class ContextWindowManager:
         # Default conservative limit
         return ContextLimits(max_tokens=4096)
 
-    def count_tokens(self, messages: List[Message]) -> int:
+    def count_tokens(self, messages: list[Message]) -> int:
         """
         Count tokens in messages.
 
@@ -155,7 +155,7 @@ class ContextWindowManager:
 
     def check_limit(
         self,
-        messages: List[Message],
+        messages: list[Message],
         max_output_tokens: Optional[int] = None,
     ) -> bool:
         """
@@ -179,7 +179,7 @@ class ContextWindowManager:
 
         return total_tokens <= self.limits.max_tokens
 
-    def get_available_tokens(self, messages: List[Message]) -> int:
+    def get_available_tokens(self, messages: list[Message]) -> int:
         """
         Get number of tokens available for output.
 
@@ -194,9 +194,9 @@ class ContextWindowManager:
 
     def truncate(
         self,
-        messages: List[Message],
+        messages: list[Message],
         max_output_tokens: Optional[int] = None,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """
         Truncate messages to fit within context limit.
 
@@ -231,9 +231,9 @@ class ContextWindowManager:
 
     def _truncate_oldest_first(
         self,
-        messages: List[Message],
+        messages: list[Message],
         target_tokens: int,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Remove oldest messages first (keep system message)."""
         # Always keep system messages
         system_messages = [m for m in messages if m.role == MessageRole.SYSTEM]
@@ -257,9 +257,9 @@ class ContextWindowManager:
 
     def _truncate_middle_out(
         self,
-        messages: List[Message],
+        messages: list[Message],
         target_tokens: int,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Keep first and last messages, remove middle."""
         if len(messages) <= 2:
             return messages
@@ -287,9 +287,9 @@ class ContextWindowManager:
 
     def _truncate_sliding_window(
         self,
-        messages: List[Message],
+        messages: list[Message],
         target_tokens: int,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Keep most recent N messages."""
         # Always keep system messages
         system_messages = [m for m in messages if m.role == MessageRole.SYSTEM]
@@ -312,9 +312,9 @@ class ContextWindowManager:
 
     def _truncate_smart(
         self,
-        messages: List[Message],
+        messages: list[Message],
         target_tokens: int,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """
         Smart truncation: keep system + important messages + recent.
 
@@ -343,7 +343,7 @@ class ContextWindowManager:
                 current_tokens += message_tokens
 
         # Fill remaining space with other messages (newest first)
-        remaining = [m for m in other_messages[:-2]]
+        remaining = list(other_messages[:-2])
         for message in reversed(remaining):
             message_tokens = self.token_counter.count_message_tokens(message)
             if current_tokens + message_tokens <= target_tokens:
@@ -363,7 +363,7 @@ class ContextWindowManager:
         """
         self._warning_callback = callback
 
-    def get_stats(self, messages: List[Message]) -> dict:
+    def get_stats(self, messages: list[Message]) -> dict:
         """
         Get statistics about context usage.
 

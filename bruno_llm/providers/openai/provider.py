@@ -1,7 +1,7 @@
 """OpenAI provider implementation."""
 
 from collections.abc import AsyncIterator
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from openai import (
     APIConnectionError,
@@ -130,13 +130,13 @@ class OpenAIProvider(BaseProvider, LLMInterface):
         """Get provider configuration."""
         return self._config
 
-    def _format_messages(self, messages: List[Message]) -> List[Dict[str, str]]:
+    def _format_messages(self, messages: list[Message]) -> list[dict[str, str]]:
         """Convert bruno-core messages to OpenAI format."""
         return [{"role": msg.role.value, "content": msg.content} for msg in messages]
 
-    def _build_request_params(self, **kwargs: Any) -> Dict[str, Any]:
+    def _build_request_params(self, **kwargs: Any) -> dict[str, Any]:
         """Build OpenAI API request parameters."""
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             "model": self._model,
             "temperature": self._config.temperature,
             "top_p": self._config.top_p,
@@ -159,7 +159,7 @@ class OpenAIProvider(BaseProvider, LLMInterface):
 
     def _track_usage(
         self,
-        messages: List[Message],
+        messages: list[Message],
         response_text: str,
         completion: Optional[ChatCompletion] = None,
     ) -> None:
@@ -184,7 +184,7 @@ class OpenAIProvider(BaseProvider, LLMInterface):
             output_tokens=output_tokens,
         )
 
-    async def generate(self, messages: List[Message], **kwargs: Any) -> str:
+    async def generate(self, messages: list[Message], **kwargs: Any) -> str:
         """
         Generate a complete response from OpenAI.
 
@@ -235,7 +235,7 @@ class OpenAIProvider(BaseProvider, LLMInterface):
             else:
                 raise LLMError(f"OpenAI API error: {e}") from e
 
-    async def stream(self, messages: List[Message], **kwargs: Any) -> AsyncIterator[str]:
+    async def stream(self, messages: list[Message], **kwargs: Any) -> AsyncIterator[str]:
         """
         Stream response tokens from OpenAI.
 
@@ -290,7 +290,7 @@ class OpenAIProvider(BaseProvider, LLMInterface):
         except Exception as e:
             raise StreamError(f"Unexpected streaming error: {e}") from e
 
-    async def list_models(self) -> List[str]:
+    async def list_models(self) -> list[str]:
         """
         List available OpenAI models.
 
@@ -331,7 +331,7 @@ class OpenAIProvider(BaseProvider, LLMInterface):
         """
         return self._token_counter.count_tokens(text)
 
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict[str, Any]:
         """
         Get current model information.
 

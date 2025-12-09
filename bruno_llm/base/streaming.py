@@ -8,7 +8,7 @@ import asyncio
 from collections import deque
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
-from typing import Callable, Deque, List, Optional
+from typing import Callable, Optional
 
 from bruno_llm.exceptions import StreamError
 
@@ -47,7 +47,7 @@ class StreamBuffer:
         stats: Stream statistics
     """
 
-    buffer: Deque[str] = field(default_factory=deque)
+    buffer: deque[str] = field(default_factory=deque)
     max_size: int = 10000
     batch_size: int = 1
     stats: StreamStats = field(default_factory=StreamStats)
@@ -316,7 +316,7 @@ class StreamProcessor:
         self,
         stream: AsyncIterator[str],
         retry_on_error: bool = True,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Process a stream with callbacks and error handling.
 
@@ -394,8 +394,8 @@ async def stream_with_timeout(
     async for chunk in stream:
         try:
             yield await asyncio.wait_for(_async_identity(chunk), timeout=timeout)
-        except asyncio.TimeoutError:
-            raise TimeoutError(f"No chunk received within {timeout} seconds")
+        except asyncio.TimeoutError as e:
+            raise TimeoutError(f"No chunk received within {timeout} seconds") from e
 
 
 async def _async_identity(value):

@@ -249,7 +249,7 @@ async def test_middleware_chain(sample_messages):
     assert len(middleware3.before_calls) == 1
 
     # After response - should call all in reverse order
-    response = await chain.after_response(sample_messages, "Response")
+    await chain.after_response(sample_messages, "Response")
 
     assert len(middleware1.after_calls) == 1
     assert len(middleware2.after_calls) == 1

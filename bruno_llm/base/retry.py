@@ -7,7 +7,7 @@ in API calls.
 
 import asyncio
 import random
-from typing import Any, Callable, Optional, Type, TypeVar
+from typing import Any, Callable, Optional, TypeVar
 
 from bruno_llm.exceptions import LLMError, RateLimitError
 
@@ -34,7 +34,7 @@ class RetryConfig:
         max_delay: float = 60.0,
         exponential_base: float = 2.0,
         jitter: bool = True,
-        retry_on: Optional[tuple[Type[Exception], ...]] = None,
+        retry_on: Optional[tuple[type[Exception], ...]] = None,
     ):
         """
         Initialize retry configuration.

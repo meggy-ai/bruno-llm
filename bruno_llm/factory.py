@@ -1,7 +1,7 @@
 """Factory for creating LLM provider instances."""
 
 import os
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 from bruno_core.interfaces import LLMInterface
 from bruno_llm.exceptions import ConfigurationError, LLMError
@@ -33,7 +33,7 @@ class LLMFactory:
         ... )
     """
 
-    _providers: Dict[str, Callable[..., LLMInterface]] = {}
+    _providers: dict[str, Callable[..., LLMInterface]] = {}
 
     @classmethod
     def register(cls, name: str, provider_class: Callable[..., LLMInterface]) -> None:
@@ -48,7 +48,7 @@ class LLMFactory:
 
     @classmethod
     def create(
-        cls, provider: str, config: Optional[Dict[str, Any]] = None, **kwargs: Any
+        cls, provider: str, config: Optional[dict[str, Any]] = None, **kwargs: Any
     ) -> LLMInterface:
         """
         Create a provider instance.
@@ -119,7 +119,7 @@ class LLMFactory:
         env_prefix = f"{prefix}_{provider_upper}_"
 
         # Collect all matching environment variables
-        config: Dict[str, Any] = {}
+        config: dict[str, Any] = {}
         for key, value in os.environ.items():
             if key.startswith(env_prefix):
                 # Remove prefix and convert to lowercase
@@ -136,7 +136,7 @@ class LLMFactory:
 
     @classmethod
     async def create_with_fallback(
-        cls, providers: List[str], configs: Optional[List[Dict[str, Any]]] = None
+        cls, providers: list[str], configs: Optional[list[dict[str, Any]]] = None
     ) -> LLMInterface:
         """
         Create provider with fallback chain.
@@ -195,7 +195,7 @@ class LLMFactory:
         )
 
     @classmethod
-    def list_providers(cls) -> List[str]:
+    def list_providers(cls) -> list[str]:
         """
         List all registered providers.
 

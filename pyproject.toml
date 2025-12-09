@@ -83,7 +83,14 @@ ollama = "bruno_llm.providers.ollama:OllamaProvider"
 openai = "bruno_llm.providers.openai:OpenAIProvider"
 
 [tool.setuptools]
-packages = ["bruno_llm", "bruno_llm.base", "bruno_llm.providers", "bruno_llm.utils"]
+packages = [
+    "bruno_llm",
+    "bruno_llm.base",
+    "bruno_llm.providers",
+    "bruno_llm.providers.ollama",
+    "bruno_llm.providers.openai",
+    "bruno_llm.utils"
+]
 
 [tool.setuptools.package-data]
 bruno_llm = ["py.typed"]

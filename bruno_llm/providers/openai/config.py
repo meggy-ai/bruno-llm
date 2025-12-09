@@ -1,6 +1,6 @@
 """Configuration for OpenAI provider."""
 
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, Field, SecretStr
 
@@ -46,6 +46,6 @@ class OpenAIConfig(BaseModel):
     max_tokens: Optional[int] = Field(default=None, ge=1, description="Maximum tokens to generate")
     presence_penalty: float = Field(default=0.0, ge=-2.0, le=2.0, description="Presence penalty")
     frequency_penalty: float = Field(default=0.0, ge=-2.0, le=2.0, description="Frequency penalty")
-    stop: Optional[List[str]] = Field(default=None, description="Stop sequences")
+    stop: Optional[list[str]] = Field(default=None, description="Stop sequences")
 
     model_config = {"frozen": True}  # Immutable after creation

@@ -8,7 +8,7 @@ based on their pricing models.
 import time
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Optional
 
 
 @dataclass
@@ -33,7 +33,7 @@ class UsageRecord:
     input_cost: float
     output_cost: float
     total_cost: float
-    metadata: Dict[str, str] = field(default_factory=dict)
+    metadata: dict[str, str] = field(default_factory=dict)
 
     @property
     def datetime(self) -> datetime:
@@ -73,7 +73,7 @@ class CostTracker:
     def __init__(
         self,
         provider_name: str,
-        pricing: Dict[str, Dict[str, float]],
+        pricing: dict[str, dict[str, float]],
         currency: str = "USD",
     ):
         """
@@ -88,14 +88,14 @@ class CostTracker:
         self.provider_name = provider_name
         self.pricing = pricing
         self.currency = currency
-        self.usage_history: List[UsageRecord] = []
+        self.usage_history: list[UsageRecord] = []
 
     def track_request(
         self,
         model: str,
         input_tokens: int,
         output_tokens: int,
-        metadata: Optional[Dict[str, str]] = None,
+        metadata: Optional[dict[str, str]] = None,
     ) -> UsageRecord:
         """
         Track a single API request.
@@ -148,7 +148,7 @@ class CostTracker:
                 total += record.total_cost
         return total
 
-    def get_total_tokens(self, model: Optional[str] = None) -> Dict[str, int]:
+    def get_total_tokens(self, model: Optional[str] = None) -> dict[str, int]:
         """
         Get total tokens used.
 
@@ -186,14 +186,14 @@ class CostTracker:
             return len(self.usage_history)
         return sum(1 for r in self.usage_history if r.model == model)
 
-    def get_model_breakdown(self) -> Dict[str, Dict[str, float]]:
+    def get_model_breakdown(self) -> dict[str, dict[str, float]]:
         """
         Get cost breakdown by model.
 
         Returns:
             Dict mapping model names to their usage statistics
         """
-        breakdown: Dict[str, Dict[str, float]] = {}
+        breakdown: dict[str, dict[str, float]] = {}
 
         for record in self.usage_history:
             if record.model not in breakdown:
@@ -211,7 +211,7 @@ class CostTracker:
 
         return breakdown
 
-    def get_usage_report(self) -> Dict:
+    def get_usage_report(self) -> dict:
         """
         Get comprehensive usage report.
 
@@ -237,7 +237,7 @@ class CostTracker:
         """Clear all usage history."""
         self.usage_history.clear()
 
-    def export_history(self) -> List[Dict]:
+    def export_history(self) -> list[dict]:
         """
         Export usage history as list of dicts.
 
@@ -323,7 +323,7 @@ class CostTracker:
         self,
         start_time: Optional[float] = None,
         end_time: Optional[float] = None,
-    ) -> Dict:
+    ) -> dict:
         """
         Get usage report for a specific time range.
 
@@ -378,7 +378,7 @@ class CostTracker:
             "end_time": (filtered_records[-1].datetime.isoformat() if filtered_records else None),
         }
 
-    def check_budget(self, budget_limit: float) -> Dict:
+    def check_budget(self, budget_limit: float) -> dict:
         """
         Check if spending is within budget.
 

@@ -13,7 +13,6 @@ and are skipped by default. Run with: pytest -m integration
 
 import asyncio
 import os
-from typing import List
 
 import pytest
 
@@ -24,6 +23,8 @@ from bruno_llm.base import (
     ResponseCache,
     StreamAggregator,
 )
+from bruno_llm.base.context import ContextLimits
+from bruno_llm.exceptions import LLMError
 
 # Integration test markers
 pytestmark = pytest.mark.integration
@@ -46,7 +47,7 @@ def has_openai_key() -> bool:
 
 
 @pytest.fixture
-def sample_messages() -> List[Message]:
+def sample_messages() -> list[Message]:
     """Create sample conversation messages."""
     return [
         Message(role=MessageRole.SYSTEM, content="You are a helpful assistant."),
@@ -246,7 +247,7 @@ async def test_cost_tracking_integration():
     provider = LLMFactory.create_from_env("openai")
 
     messages = [Message(role=MessageRole.USER, content="Hello")]
-    response = await provider.generate(messages, max_tokens=10)
+    await provider.generate(messages, max_tokens=10)
 
     # Check cost was tracked
     cost_tracker = provider.cost_tracker
@@ -316,7 +317,7 @@ async def test_error_handling_integration():
 
     messages = [Message(role=MessageRole.USER, content="Hello")]
 
-    with pytest.raises(Exception):  # Should raise ModelNotFoundError or similar
+    with pytest.raises(LLMError):  # Should raise LLMError or subclass
         await provider.generate(messages)
 
     await provider.close()
@@ -350,5 +351,3 @@ async def test_timeout_integration():
     await provider.close()
 
 
-# Import ContextLimits for the test
-from bruno_llm.base.context import ContextLimits

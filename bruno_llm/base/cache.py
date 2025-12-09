@@ -9,7 +9,7 @@ import json
 import time
 from collections import OrderedDict
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 from bruno_core.models import Message
 
@@ -74,7 +74,7 @@ class ResponseCache:
         self._hits = 0
         self._misses = 0
 
-    def _generate_key(self, messages: List[Message], **kwargs: Any) -> str:
+    def _generate_key(self, messages: list[Message], **kwargs: Any) -> str:
         """
         Generate cache key from messages and parameters.
 
@@ -89,12 +89,12 @@ class ResponseCache:
         messages_dict = [{"role": msg.role.value, "content": msg.content} for msg in messages]
 
         # Create deterministic JSON representation
-        key_data = {"messages": messages_dict, "params": {k: v for k, v in sorted(kwargs.items())}}
+        key_data = {"messages": messages_dict, "params": dict(sorted(kwargs.items()))}
 
         key_json = json.dumps(key_data, sort_keys=True)
         return hashlib.sha256(key_json.encode()).hexdigest()
 
-    def get(self, messages: List[Message], **kwargs: Any) -> Optional[str]:
+    def get(self, messages: list[Message], **kwargs: Any) -> Optional[str]:
         """
         Get cached response if available and not expired.
 
@@ -129,7 +129,7 @@ class ResponseCache:
         return entry.response
 
     def set(
-        self, messages: List[Message], response: str, tokens: Optional[int] = None, **kwargs: Any
+        self, messages: list[Message], response: str, tokens: Optional[int] = None, **kwargs: Any
     ) -> None:
         """
         Cache a response.
@@ -164,7 +164,7 @@ class ResponseCache:
         self._hits = 0
         self._misses = 0
 
-    def invalidate(self, messages: List[Message], **kwargs: Any) -> bool:
+    def invalidate(self, messages: list[Message], **kwargs: Any) -> bool:
         """
         Invalidate a specific cache entry.
 
@@ -182,7 +182,7 @@ class ResponseCache:
             return True
         return False
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """
         Get cache statistics.
 
@@ -236,7 +236,7 @@ class ResponseCache:
 
         return len(expired_keys)
 
-    def get_top_entries(self, n: int = 10) -> List[Tuple[str, CacheEntry]]:
+    def get_top_entries(self, n: int = 10) -> list[tuple[str, CacheEntry]]:
         """
         Get top N most frequently accessed entries.
 

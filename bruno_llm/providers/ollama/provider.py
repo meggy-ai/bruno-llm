@@ -2,7 +2,7 @@
 
 import json
 from collections.abc import AsyncIterator
-from typing import Any, Dict, List
+from typing import Any
 
 import httpx
 
@@ -93,13 +93,13 @@ class OllamaProvider(BaseProvider, LLMInterface):
         """Get provider configuration."""
         return self._config
 
-    def _format_messages(self, messages: List[Message]) -> List[Dict[str, str]]:
+    def _format_messages(self, messages: list[Message]) -> list[dict[str, str]]:
         """Convert bruno-core messages to Ollama format."""
         return [{"role": msg.role.value, "content": msg.content} for msg in messages]
 
     def _build_request(
-        self, messages: List[Message], stream: bool = False, **kwargs: Any
-    ) -> Dict[str, Any]:
+        self, messages: list[Message], stream: bool = False, **kwargs: Any
+    ) -> dict[str, Any]:
         """Build Ollama API request."""
         request = {
             "model": self._model,
@@ -108,7 +108,7 @@ class OllamaProvider(BaseProvider, LLMInterface):
         }
 
         # Add optional parameters
-        options: Dict[str, Any] = {}
+        options: dict[str, Any] = {}
 
         if self._config.temperature is not None:
             options["temperature"] = self._config.temperature
@@ -129,7 +129,7 @@ class OllamaProvider(BaseProvider, LLMInterface):
 
         return request
 
-    async def generate(self, messages: List[Message], **kwargs: Any) -> str:
+    async def generate(self, messages: list[Message], **kwargs: Any) -> str:
         """
         Generate a complete response from Ollama.
 
@@ -180,7 +180,7 @@ class OllamaProvider(BaseProvider, LLMInterface):
         except (KeyError, json.JSONDecodeError) as e:
             raise InvalidResponseError(f"Invalid response format: {e}") from e
 
-    async def stream(self, messages: List[Message], **kwargs: Any) -> AsyncIterator[str]:
+    async def stream(self, messages: list[Message], **kwargs: Any) -> AsyncIterator[str]:
         """
         Stream response tokens from Ollama.
 
@@ -237,7 +237,7 @@ class OllamaProvider(BaseProvider, LLMInterface):
         except Exception as e:
             raise StreamError(f"Unexpected streaming error: {e}") from e
 
-    async def list_models(self) -> List[str]:
+    async def list_models(self) -> list[str]:
         """
         List available models in Ollama.
 
@@ -286,7 +286,7 @@ class OllamaProvider(BaseProvider, LLMInterface):
         """
         return self._token_counter.count_tokens(text)
 
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict[str, Any]:
         """
         Get current model information.
 
