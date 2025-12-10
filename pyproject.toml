@@ -45,12 +45,17 @@ dependencies = [
     "aiohttp>=3.8.0",
     "pydantic>=2.0.0",
     "structlog>=23.1.0",
+    "numpy>=1.21.0",  # Vector operations for embeddings
 ]
 
 [project.optional-dependencies]
 openai = [
     "openai>=1.0.0",
     "tiktoken>=0.5.0",
+]
+embeddings = [
+    "sentence-transformers>=2.2.0",  # HuggingFace sentence transformers
+    "scikit-learn>=1.0.0",          # Additional similarity metrics
 ]
 dev = [
     "pytest>=7.4.0",
@@ -68,7 +73,7 @@ docs = [
     "mkdocstrings[python]>=0.22.0",
 ]
 all = [
-    "bruno-llm[openai,dev,docs]",
+    "bruno-llm[openai,embeddings,dev,docs]",
 ]
 
 [project.urls]

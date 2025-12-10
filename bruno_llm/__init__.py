@@ -1,22 +1,29 @@
 """
-bruno-llm: LLM provider implementations for bruno-core.
+bruno-llm: LLM and Embedding provider implementations for bruno-core.
 
-This package provides production-ready LLM provider implementations that
-integrate seamlessly with the bruno-core framework. All providers implement
-the LLMInterface contract from bruno-core.
+This package provides production-ready LLM and Embedding provider implementations
+that integrate seamlessly with the bruno-core framework. All providers implement
+the respective interface contracts from bruno-core.
 
-Available Providers:
+Available LLM Providers:
     - OllamaProvider: Local LLM inference via Ollama
     - OpenAIProvider: OpenAI GPT models
 
-Example:
+Available Embedding Providers:
+    - OpenAIEmbeddingProvider: OpenAI text embeddings (planned)
+    - HuggingFaceEmbeddingProvider: HuggingFace sentence transformers (planned)
+    - OllamaEmbeddingProvider: Local embeddings via Ollama (planned)
+
+Example Usage:
+    >>> # LLM Provider
     >>> from bruno_llm.providers.ollama import OllamaProvider
     >>> llm = OllamaProvider(model="llama2")
     >>> response = await llm.generate([Message(role="user", content="Hello")])
 
-    >>> from bruno_llm.providers.openai import OpenAIProvider
-    >>> llm = OpenAIProvider(api_key="sk-...", model="gpt-4")
-    >>> response = await llm.generate([Message(role="user", content="Hello")])
+    >>> # Embedding Provider (when available)
+    >>> from bruno_llm.embedding_factory import EmbeddingFactory
+    >>> embedder = EmbeddingFactory.create("openai", {"api_key": "sk-..."})
+    >>> embedding = await embedder.embed_text("Hello world")
 """
 
 from bruno_llm.__version__ import (

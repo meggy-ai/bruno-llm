@@ -6,11 +6,46 @@
 
 ---
 
+## 🛡️ MANDATORY PREREQUISITE - EXTERNAL LIBRARY FIRST POLICY
+
+**⚠️ CRITICAL REQUIREMENT**: Before implementing ANY functionality, we MUST evaluate and use appropriate external libraries from popular open-source organizations instead of reinventing the wheel.
+
+### External Library Evaluation Checklist
+For each component to be implemented, MANDATORY checks:
+
+1. **Search for existing solutions**: Check PyPI, GitHub, awesome-lists for established libraries
+2. **Evaluate popular options**: Prefer libraries from reputable orgs (HuggingFace, OpenAI, Microsoft, Google, etc.)
+3. **Assess integration complexity**: Choose libraries that integrate well with our async-first architecture
+4. **Performance considerations**: Ensure chosen libraries meet our performance requirements
+5. **Maintenance status**: Prefer actively maintained libraries with recent releases
+6. **License compatibility**: Ensure license compatibility with our project
+
+### Pre-Approved External Libraries for This Task
+
+**Embedding & Vector Operations:**
+- `sentence-transformers` (HuggingFace) - For local embedding models
+- `openai` (OpenAI) - For OpenAI embedding API
+- `numpy` (NumPy) - For efficient vector operations and similarity calculations
+- `scikit-learn` (scikit-learn org) - For additional similarity metrics
+- `faiss-cpu` (Facebook AI) - For efficient similarity search (if needed)
+- `tiktoken` (OpenAI) - For accurate tokenization
+
+**HTTP & Async:**
+- `httpx` - Already used in project for HTTP clients
+- `aiofiles` - For async file operations (if needed)
+
+**Configuration & Validation:**
+- `pydantic` - Already used in project for config models
+
+---
+
 ## Executive Summary
 
 **CRITICAL ALIGNMENT ISSUE DISCOVERED**: Bruno-core defines `EmbeddingInterface` but bruno-llm fails to implement it, creating a dependency gap that blocks bruno-memory development and semantic functionality.
 
 **Root Cause Analysis**: Lack of integration testing with bruno-core interfaces led to missing this required interface implementation.
+
+**Implementation Strategy**: Leverage external libraries (sentence-transformers, numpy, openai) instead of custom implementations for core functionality.
 
 ---
 

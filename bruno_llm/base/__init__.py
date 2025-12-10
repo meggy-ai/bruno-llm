@@ -21,6 +21,9 @@ from bruno_llm.base.cost_tracker import (
     CostTracker,
     UsageRecord,
 )
+
+# Embedding support
+from bruno_llm.base.embedding_interface import BaseEmbeddingProvider
 from bruno_llm.base.middleware import (
     CachingMiddleware,
     LoggingMiddleware,
@@ -86,4 +89,6 @@ __all__ = [
     "CachingMiddleware",
     "ValidationMiddleware",
     "RetryMiddleware",
+    # Embedding support
+    "BaseEmbeddingProvider",
 ]

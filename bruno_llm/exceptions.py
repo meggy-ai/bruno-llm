@@ -199,3 +199,14 @@ class InvalidResponseError(LLMError):
     """
 
     pass
+
+
+class ProviderNotFoundError(LLMError):
+    """
+    Raised when requested provider is not registered.
+
+    Example:
+        >>> raise ProviderNotFoundError("Provider 'unknown' not found")
+    """
+
+    pass

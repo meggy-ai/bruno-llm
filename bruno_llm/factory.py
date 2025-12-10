@@ -3,7 +3,7 @@
 import os
 from typing import Any, Callable, Optional
 
-from bruno_core.interfaces import LLMInterface
+from bruno_core.interfaces import EmbeddingInterface, LLMInterface
 from bruno_llm.exceptions import ConfigurationError, LLMError
 
 
@@ -238,3 +238,94 @@ def _register_builtin_providers():
 
 # Auto-register on import
 _register_builtin_providers()
+
+
+class UnifiedProviderFactory:
+    """
+    Unified factory for creating both LLM and Embedding providers.
+
+    This factory provides a single interface for creating any type of provider,
+    integrating both LLMFactory and EmbeddingFactory.
+
+    Examples:
+        >>> # Create LLM provider
+        >>> llm = UnifiedProviderFactory.create_llm("openai", {"api_key": "sk-..."})
+
+        >>> # Create embedding provider
+        >>> embedder = UnifiedProviderFactory.create_embedding("openai", {"api_key": "sk-..."})
+
+        >>> # List all available providers
+        >>> all_providers = UnifiedProviderFactory.list_all_providers()
+    """
+
+    @classmethod
+    def create_llm(
+        cls, provider: str, config: Optional[dict[str, Any]] = None, **kwargs: Any
+    ) -> LLMInterface:
+        """
+        Create an LLM provider instance.
+
+        Args:
+            provider: Provider name
+            config: Configuration dictionary
+            **kwargs: Additional configuration arguments
+
+        Returns:
+            LLM provider instance
+        """
+        return LLMFactory.create(provider, config, **kwargs)
+
+    @classmethod
+    def create_embedding(
+        cls, provider: str, config: Optional[dict[str, Any]] = None, **kwargs: Any
+    ) -> EmbeddingInterface:
+        """
+        Create an embedding provider instance.
+
+        Args:
+            provider: Provider name
+            config: Configuration dictionary
+            **kwargs: Additional configuration arguments
+
+        Returns:
+            Embedding provider instance
+
+        Raises:
+            ImportError: If embedding support not available
+        """
+        try:
+            from bruno_llm.embedding_factory import EmbeddingFactory
+
+            return EmbeddingFactory.create(provider, config, **kwargs)
+        except ImportError as e:
+            raise ConfigurationError(
+                "Embedding support not available. Please ensure embedding providers are installed."
+            ) from e
+
+    @classmethod
+    def list_llm_providers(cls) -> list[str]:
+        """List all available LLM providers."""
+        return LLMFactory.list_providers()
+
+    @classmethod
+    def list_embedding_providers(cls) -> list[str]:
+        """List all available embedding providers."""
+        try:
+            from bruno_llm.embedding_factory import EmbeddingFactory
+
+            return EmbeddingFactory.list_providers()
+        except ImportError:
+            return []
+
+    @classmethod
+    def list_all_providers(cls) -> dict[str, list[str]]:
+        """
+        List all available providers by type.
+
+        Returns:
+            Dictionary with 'llm' and 'embedding' keys mapping to provider lists
+        """
+        return {
+            "llm": cls.list_llm_providers(),
+            "embedding": cls.list_embedding_providers(),
+        }

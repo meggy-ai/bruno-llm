@@ -5,6 +5,13 @@ aiohttp>=3.8.0
 pydantic>=2.0.0
 structlog>=23.1.0
 
+# Vector operations and numerical computing (using numpy for efficiency)
+numpy>=1.21.0
+
 # Optional dependencies (install with pip install bruno-llm[openai])
 # openai>=1.0.0
 # tiktoken>=0.5.0
+
+# Optional embedding dependencies (install with pip install bruno-llm[embeddings])
+# sentence-transformers>=2.2.0  # HuggingFace sentence transformers
+# scikit-learn>=1.0.0          # Additional similarity metrics and utilities
