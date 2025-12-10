@@ -2,9 +2,9 @@
 
 ## Release Information
 
-**Version:** 0.1.0  
-**Release Date:** December 9, 2025  
-**Tag:** v0.1.0  
+**Version:** 0.1.0
+**Release Date:** December 9, 2025
+**Tag:** v0.1.0
 **Type:** Initial Release
 
 ## Overview
