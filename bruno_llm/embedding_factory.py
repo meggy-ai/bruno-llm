@@ -86,7 +86,7 @@ class EmbeddingFactory:
         if provider_lower not in cls._providers:
             available = ", ".join(cls._providers.keys())
             raise ProviderNotFoundError(
-                f"Embedding provider '{provider}' not found. " f"Available providers: {available}"
+                f"Embedding provider '{provider}' not found. Available providers: {available}"
             )
 
         provider_class = cls._providers[provider_lower]
@@ -170,6 +170,16 @@ class EmbeddingFactory:
                 config["batch_size"] = int(os.environ["EMBEDDING_BATCH_SIZE"])
             except ValueError:
                 pass
+
+        # Try to use provider's from_env method if available
+        provider_class = cls._providers.get(provider.lower())
+        if provider_class and hasattr(provider_class, "from_env"):
+            try:
+                return provider_class.from_env(**config)
+            except Exception:
+                if not config:  # If no config and from_env fails, re-raise the error
+                    raise
+                # Fall back to regular create if from_env fails but we have config
 
         return cls.create(provider, config)
 

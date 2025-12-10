@@ -49,3 +49,52 @@ class OpenAIConfig(BaseModel):
     stop: Optional[list[str]] = Field(default=None, description="Stop sequences")
 
     model_config = {"frozen": True}  # Immutable after creation
+
+
+class OpenAIEmbeddingConfig(BaseModel):
+    """Configuration for OpenAI embedding provider.
+
+    OpenAI provides text embedding models via API. Requires an API key from
+    https://platform.openai.com/api-keys
+
+    Supports models:
+    - text-embedding-ada-002 (1536 dimensions)
+    - text-embedding-3-small (1536 dimensions, configurable)
+    - text-embedding-3-large (3072 dimensions, configurable)
+
+    Args:
+        api_key: OpenAI API key (required)
+        model: Embedding model name (default: text-embedding-ada-002)
+        organization: Organization ID (optional)
+        base_url: API base URL (default: https://api.openai.com/v1)
+        dimensions: Embedding dimensions for v3 models (optional)
+        batch_size: Maximum batch size for requests (default: 100)
+        timeout: Request timeout in seconds (default: 30.0)
+        max_retries: Maximum retry attempts (default: 3)
+
+    Examples:
+        >>> config = OpenAIEmbeddingConfig(
+        ...     api_key="sk-...",
+        ...     model="text-embedding-ada-002"
+        ... )
+        >>> config = OpenAIEmbeddingConfig(
+        ...     api_key="sk-...",
+        ...     model="text-embedding-3-small",
+        ...     dimensions=512
+        ... )
+    """
+
+    api_key: SecretStr = Field(..., description="OpenAI API key")
+    model: str = Field(default="text-embedding-ada-002", description="Embedding model name")
+    organization: Optional[str] = Field(default=None, description="Organization ID")
+    base_url: str = Field(default="https://api.openai.com/v1", description="API base URL")
+    dimensions: Optional[int] = Field(
+        default=None, ge=1, le=4096, description="Embedding dimensions (for v3 models only)"
+    )
+    batch_size: int = Field(
+        default=100, ge=1, le=2048, description="Maximum batch size for embedding requests"
+    )
+    timeout: float = Field(default=30.0, ge=0.0, description="Request timeout in seconds")
+    max_retries: int = Field(default=3, ge=0, description="Maximum retry attempts")
+
+    model_config = {"frozen": True}  # Immutable after creation

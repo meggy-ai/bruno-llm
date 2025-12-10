@@ -15,3 +15,4 @@ numpy>=1.21.0
 # Optional embedding dependencies (install with pip install bruno-llm[embeddings])
 # sentence-transformers>=2.2.0  # HuggingFace sentence transformers
 # scikit-learn>=1.0.0          # Additional similarity metrics and utilities
+# openai>=1.0.0                # OpenAI embedding API client (external library)

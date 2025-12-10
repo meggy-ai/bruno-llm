@@ -7,7 +7,6 @@ This test verifies that our EmbeddingInterface implementation:
 3. Factory pattern works correctly
 """
 
-
 import numpy as np
 import pytest
 

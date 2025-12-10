@@ -207,7 +207,7 @@ class BaseEmbeddingProvider(EmbeddingInterface, ABC):
         expected_dim = expected_dimension or self.get_dimension()
         if len(embedding) != expected_dim:
             raise ValueError(
-                f"Embedding dimension mismatch: expected {expected_dim}, " f"got {len(embedding)}"
+                f"Embedding dimension mismatch: expected {expected_dim}, got {len(embedding)}"
             )
 
     def batch_cosine_similarity(
