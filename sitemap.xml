@@ -2,90 +2,106 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/PRE_COMMIT_SETUP/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/USER_GUIDE/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/about/changelog/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/about/license/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
+    </url>
+    <url>
+         <loc>https://meggy-ai.github.io/bruno-llm/api/API_REFERENCE/</loc>
+         <lastmod>2025-12-10</lastmod>
+    </url>
+    <url>
+         <loc>https://meggy-ai.github.io/bruno-llm/api/EMBEDDING_GUIDE/</loc>
+         <lastmod>2025-12-10</lastmod>
+    </url>
+    <url>
+         <loc>https://meggy-ai.github.io/bruno-llm/api/OLLAMA_PROVIDER/</loc>
+         <lastmod>2025-12-10</lastmod>
+    </url>
+    <url>
+         <loc>https://meggy-ai.github.io/bruno-llm/api/OPENAI_PROVIDER/</loc>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/api/base/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/api/exceptions/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/api/factory/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/api/providers/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/development/contributing/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/development/pre-commit/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/development/testing/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/getting-started/installation/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/getting-started/quickstart/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/overview/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/advanced/caching/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/advanced/context/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/advanced/cost-tracking/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/advanced/middleware/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/advanced/streaming/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/providers/ollama/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
     <url>
          <loc>https://meggy-ai.github.io/bruno-llm/user-guide/providers/openai/</loc>
-         <lastmod>2025-12-09</lastmod>
+         <lastmod>2025-12-10</lastmod>
     </url>
 </urlset>
