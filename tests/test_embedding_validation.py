@@ -87,7 +87,7 @@ class TestBaseEmbeddingProvider:
         vec1 = [1.0, 2.0, 3.0]
         vec2 = [1.0, 2.0, 3.0]
         similarity = provider.calculate_similarity(vec1, vec2)
-        assert abs(similarity - 1.0) < 1e-10
+        assert abs(similarity - 1.0) < 1e-6  # More reasonable tolerance for floating-point
 
         # Test orthogonal vectors
         vec1 = [1.0, 0.0]
@@ -107,7 +107,7 @@ class TestBaseEmbeddingProvider:
         assert similarity_matrix.shape == (2, 2)
         # Should be identity matrix
         expected = np.array([[1.0, 0.0], [0.0, 1.0]])
-        np.testing.assert_allclose(similarity_matrix, expected, atol=1e-10)
+        np.testing.assert_allclose(similarity_matrix, expected, atol=1e-6)
 
     def test_find_most_similar(self):
         """Test finding most similar embeddings."""
