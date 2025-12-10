@@ -8,9 +8,10 @@ Complete guide to using bruno-llm for LLM provider integration.
 2. [Quick Start](#quick-start)
 3. [Provider Setup](#provider-setup)
 4. [Basic Usage](#basic-usage)
-5. [Advanced Features](#advanced-features)
-6. [Best Practices](#best-practices)
-7. [Troubleshooting](#troubleshooting)
+5. [Embedding Usage](#embedding-usage)
+6. [Advanced Features](#advanced-features)
+7. [Best Practices](#best-practices)
+8. [Troubleshooting](#troubleshooting)
 
 ## Installation
 
@@ -22,8 +23,8 @@ pip install bruno-llm
 
 This includes:
 - bruno-core framework
-- Ollama provider support
-- All base utilities
+- Ollama provider support (LLM + embeddings)
+- All base utilities and factory patterns
 
 ### With OpenAI Support
 
@@ -34,6 +35,7 @@ pip install bruno-llm[openai]
 Additional packages:
 - `openai` - Official OpenAI Python client
 - `tiktoken` - Accurate token counting for GPT models
+- Full embedding support for OpenAI embedding models
 
 ### Development Installation
 
@@ -57,16 +59,16 @@ from bruno_core.models import Message, MessageRole
 async def main():
     # Create provider
     llm = LLMFactory.create("ollama", {"model": "llama2"})
-    
+
     # Create message
     messages = [
         Message(role=MessageRole.USER, content="Hello! Who are you?")
     ]
-    
+
     # Generate response
     response = await llm.generate(messages)
     print(response)
-    
+
     # Clean up
     await llm.close()
 
@@ -78,16 +80,16 @@ asyncio.run(main())
 ```python
 async def streaming_demo():
     llm = LLMFactory.create("ollama", {"model": "llama2"})
-    
+
     messages = [
         Message(role=MessageRole.USER, content="Count from 1 to 10")
     ]
-    
+
     print("Response: ", end="", flush=True)
     async for chunk in llm.stream(messages):
         print(chunk, end="", flush=True)
     print()
-    
+
     await llm.close()
 
 asyncio.run(streaming_demo())
@@ -322,6 +324,245 @@ messages = [Message(role=MessageRole.USER, content="Hello")]
 response = await llm.generate(messages)  # System prompt included
 ```
 
+## Embedding Usage
+
+Bruno-LLM provides powerful embedding capabilities through multiple providers. Embeddings convert text into numerical vectors that capture semantic meaning, enabling similarity search, clustering, and RAG applications.
+
+### Quick Start with Embeddings
+
+**Basic Text Embedding:**
+
+```python
+from bruno_llm.embedding_factory import EmbeddingFactory
+
+# Create embedding provider
+embedder = EmbeddingFactory.create("openai", {
+    "api_key": "sk-...",
+    "model": "text-embedding-3-small"
+})
+
+# Generate embedding for single text
+text = "Machine learning transforms data into insights"
+embedding = await embedder.embed_text(text)
+print(f"Embedding dimension: {len(embedding)}")
+
+# Batch processing
+texts = [
+    "Artificial intelligence revolutionizes technology",
+    "Machine learning enables pattern recognition",
+    "Deep learning uses neural networks"
+]
+embeddings = await embedder.embed_texts(texts)
+print(f"Generated {len(embeddings)} embeddings")
+```
+
+### Available Embedding Providers
+
+**OpenAI Embeddings (Cloud-based):**
+
+```python
+from bruno_llm.providers.openai import OpenAIEmbeddingProvider
+
+# High-quality cloud embeddings
+embedder = OpenAIEmbeddingProvider(
+    api_key="sk-...",
+    model="text-embedding-3-small"  # or text-embedding-3-large
+)
+```
+
+**Ollama Embeddings (Local):**
+
+```python
+from bruno_llm.providers.ollama import OllamaEmbeddingProvider
+
+# Privacy-focused local embeddings
+embedder = OllamaEmbeddingProvider(
+    base_url="http://localhost:11434",
+    model="nomic-embed-text"  # Make sure model is pulled: ollama pull nomic-embed-text
+)
+```
+
+### Embedding Factory Patterns
+
+**From Environment Variables:**
+
+```bash
+# Set up environment
+export OPENAI_API_KEY=sk-...
+export OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+
+# Or for Ollama
+export OLLAMA_BASE_URL=http://localhost:11434
+export OLLAMA_EMBEDDING_MODEL=nomic-embed-text
+```
+
+```python
+# Auto-configure from environment
+embedder = EmbeddingFactory.create_from_env("openai")
+# Or
+embedder = EmbeddingFactory.create_from_env("ollama")
+```
+
+**With Fallback Providers:**
+
+```python
+# Try OpenAI first, fallback to Ollama
+embedder = EmbeddingFactory.create_with_fallback(
+    providers=["openai", "ollama"],
+    configs=[
+        {"api_key": "sk-...", "model": "text-embedding-3-small"},
+        {"base_url": "http://localhost:11434", "model": "nomic-embed-text"}
+    ]
+)
+```
+
+### Similarity Search
+
+```python
+# Calculate similarity between embeddings
+embedding1 = await embedder.embed_text("Python programming")
+embedding2 = await embedder.embed_text("Software development")
+
+similarity = embedder.calculate_similarity(embedding1, embedding2)
+print(f"Similarity: {similarity:.3f}")  # Higher values = more similar
+
+# Find most similar texts
+query = "machine learning algorithms"
+documents = [
+    "Neural networks for classification",
+    "Cooking recipes and techniques",
+    "Supervised learning methods",
+    "Travel destination guides"
+]
+
+query_embedding = await embedder.embed_text(query)
+doc_embeddings = await embedder.embed_texts(documents)
+
+# Calculate similarities
+similarities = []
+for i, doc_embedding in enumerate(doc_embeddings):
+    similarity = embedder.calculate_similarity(query_embedding, doc_embedding)
+    similarities.append((documents[i], similarity))
+
+# Sort by similarity
+similarities.sort(key=lambda x: x[1], reverse=True)
+
+print("Most similar documents:")
+for doc, score in similarities[:3]:
+    print(f"  {score:.3f}: {doc}")
+```
+
+### Simple RAG (Retrieval-Augmented Generation)
+
+Combine embeddings with LLMs for knowledge-based generation:
+
+```python
+from bruno_llm.factory import LLMFactory
+from bruno_llm.embedding_factory import EmbeddingFactory
+from bruno_core.models import Message, MessageRole
+
+class SimpleRAG:
+    def __init__(self):
+        self.llm = LLMFactory.create_from_env("openai")
+        self.embedder = EmbeddingFactory.create_from_env("openai")
+        self.knowledge = []  # (text, embedding) pairs
+
+    async def add_knowledge(self, texts: list):
+        """Add documents to knowledge base."""
+        embeddings = await self.embedder.embed_texts(texts)
+        for text, embedding in zip(texts, embeddings):
+            self.knowledge.append((text, embedding))
+
+    async def search_knowledge(self, query: str, top_k: int = 3):
+        """Find relevant documents."""
+        query_embedding = await self.embedder.embed_text(query)
+
+        similarities = []
+        for text, doc_embedding in self.knowledge:
+            similarity = self.embedder.calculate_similarity(query_embedding, doc_embedding)
+            similarities.append((text, similarity))
+
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        return [text for text, _ in similarities[:top_k]]
+
+    async def answer_question(self, question: str):
+        """Answer using relevant knowledge."""
+        context_docs = await self.search_knowledge(question)
+        context = "\n\n".join(context_docs)
+
+        messages = [
+            Message(role=MessageRole.SYSTEM, content=
+                "Answer based on the provided context. If insufficient information, say so."),
+            Message(role=MessageRole.USER, content=f"Context:\n{context}\n\nQuestion: {question}")
+        ]
+
+        return await self.llm.generate(messages)
+
+# Usage
+rag = SimpleRAG()
+
+# Add knowledge
+knowledge = [
+    "Bruno-LLM provides unified LLM provider interfaces",
+    "It supports OpenAI, Ollama, and other providers",
+    "The factory pattern enables easy provider switching",
+    "Embedding providers enable semantic search capabilities"
+]
+await rag.add_knowledge(knowledge)
+
+# Ask questions
+answer = await rag.answer_question("What does Bruno-LLM provide?")
+print(answer)
+```
+
+### Best Practices for Embeddings
+
+**1. Choose the Right Provider:**
+
+```python
+def select_embedding_provider(use_case: str):
+    """Select optimal embedding provider."""
+    if use_case == "privacy_critical":
+        return "ollama"  # Local, private
+    elif use_case == "cost_sensitive":
+        return "openai", "text-embedding-3-small"  # Cheapest OpenAI
+    elif use_case == "high_accuracy":
+        return "openai", "text-embedding-3-large"  # Best performance
+    else:
+        return "openai", "text-embedding-ada-002"  # Balanced
+```
+
+**2. Batch Processing for Efficiency:**
+
+```python
+# Process in batches instead of one-by-one
+texts = ["text1", "text2", ...]  # Large list
+
+batch_size = 100
+all_embeddings = []
+
+for i in range(0, len(texts), batch_size):
+    batch = texts[i:i + batch_size]
+    batch_embeddings = await embedder.embed_texts(batch)
+    all_embeddings.extend(batch_embeddings)
+```
+
+**3. Error Handling:**
+
+```python
+from bruno_llm.exceptions import LLMError
+
+async def robust_embedding(embedder, text: str):
+    """Generate embedding with error handling."""
+    try:
+        return await embedder.embed_text(text)
+    except LLMError as e:
+        print(f"Embedding failed: {e}")
+        return None  # or default embedding
+```
+
+For more advanced embedding patterns and integrations, see the [Embedding Guide](api/EMBEDDING_GUIDE.md).
+
 ## Advanced Features
 
 ### Response Caching
@@ -544,24 +785,24 @@ import asyncio
 
 async def process_multiple():
     llm = LLMFactory.create("ollama", {"model": "llama2"})
-    
+
     # Create multiple message sets
     message_sets = [
         [Message(role=MessageRole.USER, content=f"Tell me about topic {i}")]
         for i in range(5)
     ]
-    
+
     # Process concurrently
     tasks = [llm.generate(msgs) for msgs in message_sets]
     responses = await asyncio.gather(*tasks, return_exceptions=True)
-    
+
     # Handle results
     for i, response in enumerate(responses):
         if isinstance(response, Exception):
             print(f"Request {i} failed: {response}")
         else:
             print(f"Request {i}: {response[:50]}...")
-    
+
     await llm.close()
 
 asyncio.run(process_multiple())
@@ -766,6 +1007,75 @@ async def rate_limited_request():
 - Reduce max_tokens
 - Implement caching
 - Monitor with cost_tracker
+
+### Embedding Issues
+
+**"Embedding model not found" (Ollama)**
+
+```bash
+# Check available models
+ollama list
+
+# Pull embedding model
+ollama pull nomic-embed-text
+ollama pull mxbai-embed-large
+```
+
+**"Invalid dimensions" or similarity errors**
+
+```python
+# Ensure embeddings are from the same model
+embedder = EmbeddingFactory.create("openai", {
+    "model": "text-embedding-3-small"  # Consistent model
+})
+
+# Check embedding dimensions
+embedding = await embedder.embed_text("test")
+print(f"Dimension: {len(embedding)}")
+```
+
+**High embedding costs (OpenAI)**
+
+```python
+# Use smaller, cheaper model
+embedder = EmbeddingFactory.create("openai", {
+    "model": "text-embedding-3-small"  # Cheaper than ada-002
+})
+
+# Or switch to local Ollama
+embedder = EmbeddingFactory.create_from_env("ollama")
+```
+
+**Slow embedding generation**
+
+```python
+# Process in batches for efficiency
+batch_size = 100
+texts = ["text1", "text2", ...]  # Your texts
+
+embeddings = []
+for i in range(0, len(texts), batch_size):
+    batch = texts[i:i + batch_size]
+    batch_embeddings = await embedder.embed_texts(batch)
+    embeddings.extend(batch_embeddings)
+```
+
+**Memory issues with large text collections**
+
+```python
+# Use generators for large datasets
+async def process_large_collection(embedder, texts):
+    batch_size = 50  # Smaller batches
+
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i + batch_size]
+        yield await embedder.embed_texts(batch)
+
+# Usage
+async for batch_embeddings in process_large_collection(embedder, texts):
+    # Process each batch immediately
+    save_embeddings(batch_embeddings)
+```
 
 ### General Issues
 

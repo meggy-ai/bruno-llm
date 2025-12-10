@@ -40,3 +40,41 @@ class OllamaConfig(BaseModel):
     stop: Optional[list[str]] = Field(default=None, description="Stop sequences")
 
     model_config = {"frozen": True}  # Immutable after creation
+
+
+class OllamaEmbeddingConfig(BaseModel):
+    """Configuration for Ollama embedding provider.
+
+    Ollama runs embedding models locally without API keys. Requires Ollama
+    to be installed and running with embedding models pulled.
+
+    Supports models:
+    - nomic-embed-text (768 dimensions)
+    - mxbai-embed-large (1024 dimensions)
+    - snowflake-arctic-embed (1024 dimensions)
+    - all-minilm:l6-v2 (384 dimensions)
+
+    Args:
+        base_url: Ollama API endpoint (default: http://localhost:11434)
+        model: Embedding model name (default: nomic-embed-text)
+        timeout: Request timeout in seconds (default: 30.0)
+        batch_size: Maximum batch size for requests (default: 32)
+
+    Examples:
+        >>> config = OllamaEmbeddingConfig(
+        ...     model="nomic-embed-text"
+        ... )
+        >>> config = OllamaEmbeddingConfig(
+        ...     base_url="http://192.168.1.100:11434",
+        ...     model="mxbai-embed-large"
+        ... )
+    """
+
+    base_url: str = Field(default="http://localhost:11434", description="Base URL for Ollama API")
+    model: str = Field(default="nomic-embed-text", description="Embedding model name")
+    timeout: float = Field(default=30.0, ge=0.0, description="Request timeout in seconds")
+    batch_size: int = Field(
+        default=32, ge=1, le=128, description="Maximum batch size for embedding requests"
+    )
+
+    model_config = {"frozen": True}  # Immutable after creation

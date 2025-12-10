@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bruno-llm"
-version = "0.1.0"
-description = "LLM provider implementations for bruno-core framework"
+version = "0.2.0"
+description = "LLM and embedding provider implementations for bruno-core framework"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
@@ -23,6 +23,10 @@ keywords = [
     "bruno",
     "chatbot",
     "language-model",
+    "embeddings",
+    "semantic-search",
+    "rag",
+    "vector-search",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",

@@ -7,13 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
+### Added
+
+#### Embedding Support (0.2.0 Features)
+- **Embedding Provider Interface**: Complete `EmbeddingInterface` implementation from bruno-core
+  - Unified interface for text embeddings across providers
+  - Similarity calculation utilities
+  - Batch processing support
+- **Ollama Embedding Provider**: Local embedding generation
+  - Support for `nomic-embed-text`, `mxbai-embed-large`, `snowflake-arctic-embed`
+  - Privacy-focused local processing
+  - No usage costs or rate limits
+  - 29 comprehensive tests (91% coverage)
+- **OpenAI Embedding Provider**: Cloud embedding service
+  - Support for `text-embedding-3-small`, `text-embedding-3-large`, `text-embedding-ada-002`
+  - High-quality embeddings with batch processing
+  - Cost optimization and monitoring
+- **Embedding Factory**: Easy provider instantiation
+  - `EmbeddingFactory.create()` - Create from config dict
+  - `EmbeddingFactory.create_from_env()` - Create from environment
+  - `EmbeddingFactory.create_with_fallback()` - Provider fallback chain
+
+#### Bruno-Core Compatibility
+- **Interface Compatibility Tests**: 24 tests validating bruno-core integration
+  - Method signature verification using inspect module
+  - Async generator validation for streaming
+  - Parameter compatibility checks
+  - Interface inheritance validation
+- **Bruno-Core Validation Script**: Comprehensive compatibility verification
+  - All providers properly implement LLMInterface and EmbeddingInterface
+  - Factory integration confirmed working
+  - Full compatibility with bruno-core ecosystem
+
+#### Enhanced Documentation
+- **API Reference Documentation**: Complete API coverage
+  - Main API reference with all interfaces and providers
+  - Provider-specific guides (OpenAI, Ollama)
+  - Comprehensive embedding guide with examples
+  - Integration patterns and best practices
+- **Updated User Guides**: Enhanced with embedding functionality
+  - Embedding usage examples and patterns
+  - RAG (Retrieval-Augmented Generation) implementations
+  - Similarity search and semantic capabilities
+  - Updated troubleshooting for embedding issues
+- **Provider Documentation**: Detailed provider-specific guides
+  - Installation and setup instructions
+  - Configuration options and examples
+  - Performance optimization tips
+  - Integration patterns and use cases
+
+#### Testing Improvements
+- **Extended Test Coverage**: 288+ total tests with 89% coverage
+  - 29 Ollama embedding provider tests
+  - 24 bruno-core compatibility tests
+  - Comprehensive error handling and edge case coverage
+  - Mock-based testing for reliable CI/CD
+
+### Technical Enhancements
+- **Updated Provider Methods**: Enhanced LLM providers with explicit parameter support
+  - Added temperature and max_tokens parameters to generate() and stream() methods
+  - Improved bruno-core interface compliance
+  - Better parameter validation and type safety
+
+### Planned (Future Releases)
 - Anthropic Claude provider
-- Google Gemini provider  
+- Google Gemini provider
 - Azure OpenAI support
 - Function calling support
 - Prompt templates
-- Batch request processing
+- Advanced RAG utilities
 
 ## [0.1.0] - 2025-12-09
 
@@ -35,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `LLMFactory.create_from_env()` - Create from environment
   - `LLMFactory.create_with_fallback()` - Provider fallback chain
 
-#### Advanced Features  
+#### Advanced Features
 - **Response Caching**: LRU cache with TTL (100% coverage)
   - Configurable size and expiration
   - Hit/miss statistics

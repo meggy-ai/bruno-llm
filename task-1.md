@@ -248,19 +248,7 @@ class OpenAIEmbeddingProvider(BaseEmbedding):
     def get_dimension(self) -> int  # 1536 for ada-002, 1536/3072 for v3
 ```
 
-#### **TASK-2.2: HuggingFace Embedding Provider**
-**Status:** 🟥 Not Started
-**Priority:** P1
-**Assignee:** Dev Team
-**Estimated:** 6 hours
-**Dependencies:** TASK-1.1
 
-**Acceptance Criteria:**
-- [ ] Support sentence-transformers models
-- [ ] Local model loading and caching
-- [ ] GPU acceleration support
-- [ ] Batch processing optimization
-- [ ] Popular models: all-MiniLM-L6-v2, all-mpnet-base-v2
 
 #### **TASK-2.3: Ollama Embedding Provider**
 **Status:** 🟥 Not Started
@@ -321,18 +309,6 @@ class OpenAIEmbeddingProvider(BaseEmbedding):
 - [ ] Similarity calculation accuracy tests
 - [ ] Error handling verification
 
-#### **TASK-3.3: Integration Tests with Bruno-Memory**
-**Status:** 🟥 Not Started
-**Priority:** P1
-**Assignee:** Dev Team
-**Estimated:** 4 hours
-**Dependencies:** TASK-1.5, bruno-memory implementation
-
-**Acceptance Criteria:**
-- [ ] End-to-end semantic search testing
-- [ ] Vector storage/retrieval validation
-- [ ] Memory provider integration tests
-- [ ] Performance benchmarks
 
 ### 🎯 PARENT-4: Integration & Validation
 
@@ -361,32 +337,6 @@ class OpenAIEmbeddingProvider(BaseEmbedding):
 - [ ] Test configuration loading from environment
 - [ ] Verify provider fallback functionality
 - [ ] Test error handling for invalid configurations
-
-#### **TASK-4.3: Performance Benchmarks**
-**Status:** 🟥 Not Started
-**Priority:** P2
-**Assignee:** Dev Team
-**Estimated:** 4 hours
-**Dependencies:** TASK-2.1, TASK-2.2
-
-**Acceptance Criteria:**
-- [ ] Embedding generation speed benchmarks
-- [ ] Memory usage profiling
-- [ ] Batch processing efficiency tests
-- [ ] Comparison with direct provider libraries
-
-#### **TASK-4.4: Bruno-Memory Integration Validation**
-**Status:** 🟥 Not Started
-**Priority:** P0
-**Assignee:** Dev Team
-**Estimated:** 3 hours
-**Dependencies:** All previous tasks, bruno-memory development
-
-**Acceptance Criteria:**
-- [ ] Semantic search functionality works
-- [ ] Vector database backends functional
-- [ ] Memory retrieval by similarity works
-- [ ] Cross-library integration stability
 
 ### 🎯 PARENT-5: Documentation & Release
 

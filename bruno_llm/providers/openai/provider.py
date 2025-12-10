@@ -184,12 +184,20 @@ class OpenAIProvider(BaseProvider, LLMInterface):
             output_tokens=output_tokens,
         )
 
-    async def generate(self, messages: list[Message], **kwargs: Any) -> str:
+    async def generate(
+        self,
+        messages: list[Message],
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        **kwargs: Any,
+    ) -> str:
         """
         Generate a complete response from OpenAI.
 
         Args:
             messages: List of conversation messages
+            temperature: Sampling temperature (0.0 to 2.0)
+            max_tokens: Maximum number of tokens to generate
             **kwargs: Additional generation parameters
 
         Returns:
@@ -203,7 +211,15 @@ class OpenAIProvider(BaseProvider, LLMInterface):
             LLMError: For other API errors
         """
         try:
-            params = self._build_request_params(**kwargs)
+            # Build parameters including explicit ones
+            generation_params = {}
+            if temperature is not None:
+                generation_params["temperature"] = temperature
+            if max_tokens is not None:
+                generation_params["max_tokens"] = max_tokens
+            generation_params.update(kwargs)
+
+            params = self._build_request_params(**generation_params)
 
             completion: ChatCompletion = await self._client.chat.completions.create(
                 messages=self._format_messages(messages), **params
@@ -235,12 +251,20 @@ class OpenAIProvider(BaseProvider, LLMInterface):
             else:
                 raise LLMError(f"OpenAI API error: {e}") from e
 
-    async def stream(self, messages: list[Message], **kwargs: Any) -> AsyncIterator[str]:
+    async def stream(
+        self,
+        messages: list[Message],
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        **kwargs: Any,
+    ) -> AsyncIterator[str]:
         """
         Stream response tokens from OpenAI.
 
         Args:
             messages: List of conversation messages
+            temperature: Sampling temperature (0.0 to 2.0)
+            max_tokens: Maximum number of tokens to generate
             **kwargs: Additional generation parameters
 
         Yields:
@@ -250,7 +274,15 @@ class OpenAIProvider(BaseProvider, LLMInterface):
             StreamError: If streaming fails
         """
         try:
-            params = self._build_request_params(stream=True, **kwargs)
+            # Build parameters including explicit ones
+            generation_params = {}
+            if temperature is not None:
+                generation_params["temperature"] = temperature
+            if max_tokens is not None:
+                generation_params["max_tokens"] = max_tokens
+            generation_params.update(kwargs)
+
+            params = self._build_request_params(stream=True, **generation_params)
 
             stream = await self._client.chat.completions.create(
                 messages=self._format_messages(messages), **params

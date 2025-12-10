@@ -2,18 +2,19 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-193%20passed-success)](https://github.com/meggy-ai/bruno-llm)
-[![Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen)](https://github.com/meggy-ai/bruno-llm)
+[![Tests](https://img.shields.io/badge/tests-288%20passed-success)](https://github.com/meggy-ai/bruno-llm)
+[![Coverage](https://img.shields.io/badge/coverage-89%25-brightgreen)](https://github.com/meggy-ai/bruno-llm)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 
-**bruno-llm** provides production-ready LLM provider implementations for the [bruno-core](https://github.com/meggy-ai/bruno-core) framework. Swap between different language model providers (Ollama, OpenAI, Anthropic, etc.) through a unified interface with advanced features like caching, streaming, context management, and cost tracking.
+**bruno-llm** provides production-ready LLM and embedding provider implementations for the [bruno-core](https://github.com/meggy-ai/bruno-core) framework. Swap between different language model and embedding providers (Ollama, OpenAI, Anthropic, etc.) through unified interfaces with advanced features like caching, streaming, context management, cost tracking, and semantic search capabilities.
 
 ## ✨ Key Features
 
 ### Core Capabilities
-- **🔌 Unified Interface**: All providers implement `LLMInterface` from bruno-core
+- **🔌 Unified Interface**: All providers implement `LLMInterface` and `EmbeddingInterface` from bruno-core
+- **🧠 Embedding Support**: Text embeddings for semantic search, similarity, and RAG applications
 - **⚡ Async-First**: Built on asyncio for non-blocking I/O
-- **🏭 Factory Pattern**: Easy provider instantiation and fallback chains
+- **🏭 Factory Pattern**: Easy provider instantiation and fallback chains for both LLM and embedding providers
 - **🔄 Streaming Support**: Real-time token streaming with aggregation
 - **📝 Type Safe**: Complete type hints with Pydantic v2 validation
 
@@ -26,7 +27,7 @@
 - **🔌 Middleware System**: Extensible request/response pipeline
 
 ### Quality & Testing
-- **🧪 Well Tested**: 203 tests with 91% code coverage
+- **🧪 Well Tested**: 288+ tests with 89% code coverage
 - **🛡️ Error Handling**: Comprehensive exception hierarchy
 - **📊 Production Ready**: Used in real-world applications
 - **📖 Documented**: Extensive documentation and examples
@@ -66,25 +67,25 @@ async def main():
         provider="ollama",
         config={"model": "llama2", "base_url": "http://localhost:11434"}
     )
-    
+
     # Or from environment variables
     # llm = LLMFactory.create_from_env("openai")
-    
+
     # Check connection
     if await llm.check_connection():
         print("✅ Connected!")
-    
+
     # Generate response
     messages = [
         Message(role=MessageRole.USER, content="What is Python?")
     ]
     response = await llm.generate(messages, max_tokens=100)
     print(response)
-    
+
     # Stream response
     async for chunk in llm.stream(messages):
         print(chunk, end="", flush=True)
-    
+
     await llm.close()
 
 asyncio.run(main())
@@ -114,6 +115,86 @@ llm = OpenAIProvider(api_key="sk-...", model="gpt-4")
 response = await llm.generate(messages)
 cost = llm.cost_tracker.get_total_cost()
 print(f"Cost: ${cost:.4f}")
+```
+
+### Embedding Usage
+
+#### Quick Start with Embeddings
+
+```python
+from bruno_llm.embedding_factory import EmbeddingFactory
+
+# Create embedding provider
+embedder = EmbeddingFactory.create("openai", {
+    "api_key": "sk-...",
+    "model": "text-embedding-3-small"
+})
+
+# Generate single embedding
+text = "Machine learning transforms data into insights"
+embedding = await embedder.embed_text(text)
+print(f"Embedding dimension: {len(embedding)}")
+
+# Batch processing
+texts = [
+    "Artificial intelligence revolutionizes technology",
+    "Machine learning enables pattern recognition",
+    "Deep learning uses neural networks"
+]
+embeddings = await embedder.embed_texts(texts)
+```
+
+#### Similarity Search
+
+```python
+# Calculate similarity between texts
+query = "artificial intelligence"
+documents = ["ML algorithms", "Cooking recipes", "AI systems"]
+
+query_emb = await embedder.embed_text(query)
+doc_embeddings = await embedder.embed_texts(documents)
+
+# Find most similar
+similarities = [
+    embedder.calculate_similarity(query_emb, doc_emb)
+    for doc_emb in doc_embeddings
+]
+
+most_similar_idx = similarities.index(max(similarities))
+print(f"Most similar: {documents[most_similar_idx]}")
+```
+
+#### Simple RAG (Retrieval-Augmented Generation)
+
+```python
+from bruno_llm.factory import LLMFactory
+
+# Combine embeddings + LLM for RAG
+llm = LLMFactory.create_from_env("openai")
+embedder = EmbeddingFactory.create_from_env("openai")
+
+# Build knowledge base
+knowledge = ["Bruno-LLM provides LLM interfaces", "It supports OpenAI and Ollama"]
+kb_embeddings = await embedder.embed_texts(knowledge)
+
+# Answer question using relevant knowledge
+question = "What does Bruno-LLM provide?"
+q_embedding = await embedder.embed_text(question)
+
+# Find most relevant knowledge
+similarities = [
+    embedder.calculate_similarity(q_embedding, kb_emb)
+    for kb_emb in kb_embeddings
+]
+best_match_idx = similarities.index(max(similarities))
+context = knowledge[best_match_idx]
+
+# Generate answer with context
+messages = [
+    Message(role=MessageRole.SYSTEM, content="Answer based on context."),
+    Message(role=MessageRole.USER, content=f"Context: {context}\nQuestion: {question}")
+]
+answer = await llm.generate(messages)
 ```
 
 ### Advanced Features
@@ -375,7 +456,7 @@ class CustomProvider(BaseProvider):
     async def generate(self, messages, **kwargs):
         # Your implementation
         pass
-    
+
     async def stream(self, messages, **kwargs):
         # Your streaming implementation
         pass
@@ -577,7 +658,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🗺️ Roadmap
 
 - [x] Ollama provider
-- [x] OpenAI provider  
+- [x] OpenAI provider
 - [x] Response caching
 - [x] Context management
 - [x] Cost tracking
