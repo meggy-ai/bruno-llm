@@ -108,9 +108,9 @@ class TestLLMInterfaceCompatibility:
             provider_params = set(provider_signature.parameters.keys())
 
             missing_params = interface_params - provider_params
-            assert (
-                not missing_params
-            ), f"Provider {method_name} missing required parameters: {missing_params}"
+            assert not missing_params, (
+                f"Provider {method_name} missing required parameters: {missing_params}"
+            )
 
     def test_ollama_provider_implements_required_methods(self, llm_interface_methods):
         """Test OllamaProvider implements all required LLMInterface methods."""
@@ -132,9 +132,9 @@ class TestLLMInterfaceCompatibility:
             provider_params = set(provider_signature.parameters.keys())
 
             missing_params = interface_params - provider_params
-            assert (
-                not missing_params
-            ), f"Provider {method_name} missing required parameters: {missing_params}"
+            assert not missing_params, (
+                f"Provider {method_name} missing required parameters: {missing_params}"
+            )
 
     def test_openai_provider_method_signatures_compatible(self):
         """Test OpenAIProvider method signatures are compatible with LLMInterface."""
@@ -185,9 +185,9 @@ class TestEmbeddingInterfaceCompatibility:
         }
 
         for method_name, interface_method in embedding_interface_methods.items():
-            assert (
-                method_name in provider_methods
-            ), f"OpenAIEmbeddingProvider missing method: {method_name}"
+            assert method_name in provider_methods, (
+                f"OpenAIEmbeddingProvider missing method: {method_name}"
+            )
 
             provider_method = provider_methods[method_name]
             interface_signature = inspect.signature(interface_method)
@@ -211,9 +211,9 @@ class TestEmbeddingInterfaceCompatibility:
         }
 
         for method_name, interface_method in embedding_interface_methods.items():
-            assert (
-                method_name in provider_methods
-            ), f"OllamaEmbeddingProvider missing method: {method_name}"
+            assert method_name in provider_methods, (
+                f"OllamaEmbeddingProvider missing method: {method_name}"
+            )
 
             provider_method = provider_methods[method_name]
             interface_signature = inspect.signature(interface_method)
@@ -381,9 +381,9 @@ class TestInterfaceDetection:
             }
 
             missing_methods = llm_interface_methods - provider_methods
-            assert (
-                not missing_methods
-            ), f"{provider_class.__name__} missing LLMInterface methods: {missing_methods}"
+            assert not missing_methods, (
+                f"{provider_class.__name__} missing LLMInterface methods: {missing_methods}"
+            )
 
         # Check Embedding providers
         embedding_interface_methods = {
@@ -400,9 +400,9 @@ class TestInterfaceDetection:
             }
 
             missing_methods = embedding_interface_methods - provider_methods
-            assert (
-                not missing_methods
-            ), f"{provider_class.__name__} missing EmbeddingInterface methods: {missing_methods}"
+            assert not missing_methods, (
+                f"{provider_class.__name__} missing EmbeddingInterface methods: {missing_methods}"
+            )
 
 
 class TestVersionCompatibility:
