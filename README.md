@@ -1,6 +1,5 @@
-# bruno-llm test
+# bruno-llm
 
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/tests-288%20passed-success)](https://github.com/meggy-ai/bruno-llm)
 [![Coverage](https://img.shields.io/badge/coverage-89%25-brightgreen)](https://github.com/meggy-ai/bruno-llm)
